@@ -30,10 +30,10 @@ export const PRODUCTS = [
 export default function ProductGrid() {
   return (
     <>
-      <div className="relative w-full mt-22 bg-[#fefce8] pb-16 md:pb-24 overflow-hidden">
+      <div className="relative w-full mt-22 bg-white pb-16 md:pb-24 overflow-hidden">
         {/* Global Background Elements for the Product Grid Area */}
         <div className="absolute inset-0 pointer-events-none z-0">
-          <div className="absolute top-[120vh] right-0 w-[60%] h-1/2 bg-gradient-to-l from-[#eebf16]/20 via-[#c09f29]/10 to-transparent" />
+          <div className="absolute top-[120vh] right-0 w-[60%] h-1/2 bg-gradient-to-l from-neutral-200/20 via-neutral-100/10 to-transparent" />
           <div className="absolute top-[140vh] left-1/4 w-[600px] h-[600px] rounded-full bg-white blur-[150px] opacity-80" />
         </div>
         <img src="./banner.png" />
@@ -43,16 +43,16 @@ export default function ProductGrid() {
           
           <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end gap-6 sm:gap-0 mb-10 md:mb-16">
             <div>
-              <h3 className="text-3xl md:text-4xl font-serif text-[#4a3610]">
+              <h3 className="text-3xl md:text-4xl font-serif text-black">
                 The Collection
               </h3>
 
-              <p className="text-[#9c711c] mt-2">
+              <p className="text-neutral-500 mt-2">
                 Curated scents for the modern soul.
               </p>
             </div>
 
-            <button className="text-xs uppercase tracking-widest border-b border-[#4a3610] text-[#4a3610] pb-1 hover:opacity-70 transition">
+            <button className="text-xs uppercase tracking-widest border-b border-black text-black pb-1 hover:opacity-70 transition">
               View All
             </button>
           </div>
@@ -70,7 +70,7 @@ export default function ProductGrid() {
                     src={product.img}
                     alt={product.name}
                     loading="lazy"
-                    className="w-full h-full object-cover sepia-[0.3] group-hover:sepia-0 transition-all duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                     onError={(e) => {
                       const fallbackImages = [
                         "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1200&auto=format&fit=crop",
@@ -83,9 +83,9 @@ export default function ProductGrid() {
                     }}
                   />
 
-                  <div className="absolute inset-0 bg-[#4a3610]/0 group-hover:bg-[#4a3610]/10 transition duration-500" />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition duration-500" />
 
-                  <div className="absolute bottom-0 left-0 w-full p-4 sm:p-5 md:p-8 bg-gradient-to-t from-[#4a3610]/90 via-[#7a5b1c]/40 to-transparent">
+                  <div className="absolute bottom-0 left-0 w-full p-4 sm:p-5 md:p-8 bg-gradient-to-t from-black/90 via-black/35 to-transparent">
                     <p className="text-white/90 text-[8px] md:text-[10px] uppercase tracking-[0.25em] mb-1 md:mb-2">
                       {product.note}
                     </p>
@@ -94,7 +94,7 @@ export default function ProductGrid() {
                       {product.name}
                     </h4>
 
-                    <p className="text-[#fefce8] mt-1 text-[10px] sm:text-xs md:text-base opacity-90">
+                    <p className="text-neutral-200 mt-1 text-[10px] sm:text-xs md:text-base opacity-90">
                       {product.price}
                     </p>
                   </div>

@@ -21,10 +21,10 @@ export default function ProductDetails() {
 
   if (!product) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-24 bg-[#fefce8]">
+      <div className="min-h-screen flex items-center justify-center pt-24 bg-white">
         <div className="text-center">
-          <h2 className="text-2xl font-serif text-[#4a3610] mb-4">Product Not Found</h2>
-          <Link to="/" className="text-xs uppercase tracking-widest border-b border-[#4a3610] text-[#4a3610] pb-1 hover:opacity-70 transition">Return to Home</Link>
+          <h2 className="text-2xl font-serif text-black mb-4">Product Not Found</h2>
+          <Link to="/" className="text-xs uppercase tracking-widest border-b border-black text-black pb-1 hover:opacity-70 transition">Return to Home</Link>
         </div>
       </div>
     );
@@ -78,7 +78,7 @@ const handleOrder = (e) => {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-6 md:px-12 bg-[#fefce8]">
+    <div className="min-h-screen pt-28 pb-20 px-6 md:px-12 bg-white">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative">
         
         {/* Product Image Section - Sticky */}
@@ -89,7 +89,7 @@ const handleOrder = (e) => {
             className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.03]"
           />
           <div className="absolute top-6 left-6 lg:top-8 lg:left-8">
-            <span className="bg-white/80 backdrop-blur-md px-5 py-2.5 rounded-full text-[10px] lg:text-xs uppercase tracking-[0.2em] text-[#4a3610] font-medium shadow-sm">
+            <span className="bg-black/90 backdrop-blur-md px-5 py-2.5 rounded-full text-[10px] lg:text-xs uppercase tracking-[0.2em] text-white font-medium shadow-sm">
               {product.note}
             </span>
           </div>
@@ -98,27 +98,27 @@ const handleOrder = (e) => {
 
         {/* Product Details & Form Section */}
         <div className="lg:col-span-7 flex flex-col justify-start lg:pt-8 lg:pb-32">
-          <Link to="/" className="text-[10px] uppercase tracking-[0.2em] text-[#4a3610]/50 hover:text-[#4a3610] mb-8 inline-flex items-center gap-3 transition-colors w-fit group">
+          <Link to="/" className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 hover:text-black mb-8 inline-flex items-center gap-3 transition-colors w-fit group">
             <span className="w-6 h-px bg-current group-hover:w-8 transition-all duration-300"></span>
             Back to Collection
           </Link>
           
           <div className="mb-10">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-[#4a3610] mb-4 tracking-tight leading-none">{product.name}</h1>
-            <p className="text-2xl md:text-3xl text-[#9c711c] font-light italic">{product.price}</p>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-black mb-4 tracking-tight leading-none">{product.name}</h1>
+            <p className="text-2xl md:text-3xl text-neutral-800 font-light italic">{product.price}</p>
           </div>
           
           <div className="mb-16 relative">
-            <div className="absolute -left-6 top-0 w-1 h-full bg-gradient-to-b from-[#9c711c] to-transparent opacity-20 hidden md:block"></div>
-            <p className="leading-relaxed text-base md:text-lg font-light text-[#4a3610]/80">
-              Experience the exquisite blend of our finest ingredients. This signature fragrance offers a timeless aroma that perfectly balances elegance and sophistication. Let <span className="font-serif italic text-[#4a3610]">{product.name}</span> be your ultimate scent statement, crafted for those who appreciate the true art of perfumery.
+            <div className="absolute -left-6 top-0 w-1 h-full bg-black opacity-20 hidden md:block"></div>
+            <p className="leading-relaxed text-base md:text-lg font-light text-black">
+              Experience the exquisite blend of our finest ingredients. This signature fragrance offers a timeless aroma that perfectly balances elegance and sophistication. Let <span className="font-serif italic text-black">{product.name}</span> be your ultimate scent statement, crafted for those who appreciate the true art of perfumery.
             </p>
           </div>
 
-          <div className="relative bg-white/50 backdrop-blur-2xl rounded-3xl p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/60">
+          <div className="relative bg-neutral-50 rounded-3xl p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-neutral-200/50">
             <div className="flex items-center gap-4 mb-10">
-              <span className="w-8 h-px bg-[#4a3610]"></span>
-              <h3 className="text-xl lg:text-2xl font-serif text-[#4a3610]">Reserve Your Bottle</h3>
+              <span className="w-8 h-px bg-black"></span>
+              <h3 className="text-xl lg:text-2xl font-serif text-black">Reserve Your Bottle</h3>
             </div>
             
             <form onSubmit={handleOrder} className="space-y-8">
@@ -130,10 +130,10 @@ const handleOrder = (e) => {
                   required
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="peer w-full bg-transparent border-b border-[#4a3610]/20 px-0 py-3 outline-none focus:border-[#4a3610] transition-colors text-[#4a3610] placeholder-transparent font-light"
+                  className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black placeholder-transparent font-light"
                   placeholder="Full Name"
                 />
-                <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-[#4a3610]/60 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#4a3610]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-[#9c711c] pointer-events-none">
+                <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
                   Full Name
                 </label>
               </div>
@@ -147,10 +147,10 @@ const handleOrder = (e) => {
                     required
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="peer w-full bg-transparent border-b border-[#4a3610]/20 px-0 py-3 outline-none focus:border-[#4a3610] transition-colors text-[#4a3610] placeholder-transparent font-light"
+                    className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black placeholder-transparent font-light"
                     placeholder="Phone Number"
                   />
-                  <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-[#4a3610]/60 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#4a3610]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-[#9c711c] pointer-events-none">
+                  <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
                     Phone Number
                   </label>
                 </div>
@@ -163,10 +163,10 @@ const handleOrder = (e) => {
                     required
                     value={formData.quantity}
                     onChange={handleInputChange}
-                    className="peer w-full bg-transparent border-b border-[#4a3610]/20 px-0 py-3 outline-none focus:border-[#4a3610] transition-colors text-[#4a3610] placeholder-transparent font-light"
+                    className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black placeholder-transparent font-light"
                     placeholder="Quantity"
                   />
-                  <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-[#4a3610]/60 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#4a3610]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-[#9c711c] pointer-events-none">
+                  <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
                     Quantity
                   </label>
                 </div>
@@ -180,10 +180,10 @@ const handleOrder = (e) => {
                   rows="2"
                   value={formData.address}
                   onChange={handleInputChange}
-                  className="peer w-full bg-transparent border-b border-[#4a3610]/20 px-0 py-3 outline-none focus:border-[#4a3610] transition-colors text-[#4a3610] resize-none placeholder-transparent font-light"
+                  className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black resize-none placeholder-transparent font-light"
                   placeholder="Delivery Address"
                 ></textarea>
-                <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-[#4a3610]/60 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-[#4a3610]/40 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-[#9c711c] pointer-events-none">
+                <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
                   Delivery Address
                 </label>
               </div>
@@ -191,9 +191,8 @@ const handleOrder = (e) => {
               {/* Submit Button */}
               <button 
                 type="submit" 
-                className={`group relative w-full bg-[#4a3610] text-white py-5 overflow-hidden rounded-none mt-8 shadow-xl transition-all duration-500 ${isClicked ? 'scale-[0.98] shadow-md' : 'hover:shadow-2xl'}`}
+                className={`group relative w-full bg-black text-white py-5 overflow-hidden rounded-none mt-8 shadow-md transition-all duration-300 ${isClicked ? 'scale-[0.98] bg-neutral-900 shadow-sm' : 'hover:bg-neutral-900 hover:shadow-lg'}`}
               >
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-[#4a3610] via-[#5c4416] to-[#4a3610] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <span className="relative z-10 uppercase tracking-[0.25em] text-xs font-medium flex items-center justify-center gap-3">
                   <svg 
                     className={`w-5 h-5 transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)] ${

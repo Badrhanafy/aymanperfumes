@@ -4,9 +4,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        'perfume-gold': '#D4AF37',
-        'perfume-cream': '#F9F6F2',
-        'perfume-dark': '#1A1A1A',
+        'perfume-gold': '#111111',
+        'perfume-cream': '#FAFAFA',
+        'perfume-dark': '#050505',
       },
       fontFamily: {
         serif: ['"Playfair Display"', 'serif'],

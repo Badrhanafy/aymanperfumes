@@ -19,44 +19,44 @@ export default function Contact() {
   };
 
   return (
-    <section className="py-20 md:py-32 bg-[#fcf4df] text-[#4a3610] relative overflow-hidden">
+    <section className="py-20 md:py-32 bg-[#0A0A0A] text-white relative overflow-hidden">
       
       {/* Subtle Background Elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#c09f29]/20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-[#eebf16]/20 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-neutral-800/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] bg-neutral-900/30 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="container mx-auto px-6 md:px-12 relative z-10 max-w-4xl">
         
         {/* Section Header */}
         <div className="mb-12 md:mb-16">
           <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-8 h-[1px] bg-[#4a3610]"></div>
-            <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-[#9c711c] font-medium">Bespoke Inquiries</span>
+            <div className="w-8 h-[1px] bg-white/20"></div>
+            <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-neutral-400 font-medium">Bespoke Inquiries</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-serif font-light tracking-tight mb-4 text-[#4a3610]">
+          <h2 className="text-4xl md:text-6xl font-serif font-light tracking-tight mb-4 text-white">
             Connect with an Artisan
           </h2>
-          <p className="text-[#9c711c] font-light max-w-lg text-sm md:text-base">
+          <p className="text-neutral-400 font-light max-w-lg text-sm md:text-base">
             Whether you seek a custom fragrance profile or have questions about our collections, our connoisseurs are at your service.
           </p>
         </div>
 
         {/* Dynamic Form Area in Glass Pane */}
-        <div className="relative min-h-[300px] bg-white/40 backdrop-blur-2xl border border-white/80 rounded-3xl p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+        <div className="relative min-h-[300px] bg-neutral-900/40 backdrop-blur-2xl border border-neutral-800/80 rounded-3xl p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.2)]">
           
           {/* Success Alert (Glassmorphism) */}
           <div 
-            className={`absolute inset-0 flex flex-col items-center justify-center p-8 bg-white/80 backdrop-blur-xl rounded-3xl transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] z-20
+            className={`absolute inset-0 flex flex-col items-center justify-center p-8 bg-black/90 backdrop-blur-xl rounded-3xl transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] z-20
               ${isSubmitted ? 'opacity-100 translate-y-0 visible' : 'opacity-0 translate-y-8 invisible'}
             `}
           >
-            <div className="w-16 h-16 rounded-full bg-[#4a3610] text-white flex items-center justify-center mb-6 shadow-xl">
+            <div className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center mb-6 shadow-xl">
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-2xl font-serif mb-2 text-[#4a3610]">Message Received</h3>
-            <p className="text-[#9c711c] font-light text-center">
+            <h3 className="text-2xl font-serif mb-2 text-white">Message Received</h3>
+            <p className="text-neutral-400 font-light text-center">
               An artisan will respond to your inquiry shortly.
             </p>
           </div>
@@ -76,11 +76,11 @@ export default function Contact() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder=" "
-                className="w-full bg-transparent border-b border-[#4a3610]/30 py-3 text-[#4a3610] outline-none focus:border-[#4a3610] transition-colors peer"
+                className="w-full bg-transparent border-b border-white/20 py-3 text-white outline-none focus:border-white transition-colors peer"
               />
               <label 
                 htmlFor="email" 
-                className="absolute left-0 top-3 text-[#9c711c] text-sm md:text-base transition-all duration-300 pointer-events-none peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#4a3610] peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-[#4a3610]"
+                className="absolute left-0 top-3 text-neutral-400 text-sm md:text-base transition-all duration-300 pointer-events-none peer-focus:-top-4 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white"
               >
                 Your Email Address
               </label>
@@ -94,11 +94,11 @@ export default function Contact() {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder=" "
-                className="w-full bg-transparent border-b border-[#4a3610]/30 py-3 text-[#4a3610] outline-none focus:border-[#4a3610] transition-colors peer resize-none"
+                className="w-full bg-transparent border-b border-white/20 py-3 text-white outline-none focus:border-white transition-colors peer resize-none"
               ></textarea>
               <label 
                 htmlFor="message" 
-                className="absolute left-0 top-3 text-[#9c711c] text-sm md:text-base transition-all duration-300 pointer-events-none peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[#4a3610] peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-[#4a3610]"
+                className="absolute left-0 top-3 text-neutral-400 text-sm md:text-base transition-all duration-300 pointer-events-none peer-focus:-top-4 peer-focus:text-xs peer-focus:text-white peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-white"
               >
                 Your Inquiry
               </label>
@@ -106,7 +106,7 @@ export default function Contact() {
 
             <button 
               type="submit" 
-              className="self-start px-10 py-4 bg-[#4a3610] text-white font-medium text-xs md:text-sm uppercase tracking-widest hover:bg-[#6b4e18] transition-colors rounded-full mt-4"
+              className="self-start px-10 py-4 bg-white text-black font-medium text-xs md:text-sm uppercase tracking-widest hover:bg-neutral-200 transition-colors rounded-full mt-4"
             >
               Send Message
             </button>

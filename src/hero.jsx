@@ -12,13 +12,13 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="relative mt-0 h-screen sm:h-[100svh] w-full overflow-hidden bg-[#92861885]">
+    <section className="relative mt-0 h-screen sm:h-[100svh] w-full overflow-hidden bg-black">
       
       {/* Black and White Gradient Background */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 right-0 w-[70%] h-full bg-gradient-to-l from-white via-gray-200 to-transparent opacity-90" />
-        <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-gradient-to-tr from-gray-900 to-transparent opacity-50" />
-        <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full bg-gray-700 blur-[100px] opacity-30" />
+        <div className="absolute top-0 right-0 w-[70%] h-full bg-gradient-to-l from-white via-neutral-100 to-transparent opacity-95" />
+        <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-gradient-to-tr from-black to-transparent opacity-50" />
+        <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full bg-neutral-800 blur-[100px] opacity-40" />
       </div>
 
       {/* Black and White Woman Image - Fading Effect */}
@@ -43,7 +43,7 @@ const Hero = () => {
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white mb-4 md:mb-6 leading-none md:leading-tight">
             REEH 
-            <span className="block font-bold text-[#12130fd9] mt-1 md:mt-1">AL JANOUB</span>
+            <span className="block font-bold text-neutral-300 mt-1 md:mt-1">AL JANOUB</span>
           </h1>
           
           {/* Subtitle */}
@@ -67,18 +67,18 @@ const Hero = () => {
           </div>
 
           {/* Stats in Theme Colors */}
-          <div className="flex flex-wrap gap-6 md:gap-12 pt-6 md:pt-8 border-t border-[#d4af37]/30">
+          <div className="flex flex-wrap gap-6 md:gap-12 pt-6 md:pt-8 border-t border-white/10">
             <div>
-              <div className="text-2xl md:text-3xl font-bold text-[#4a3610]">12</div>
-              <div className="text-[10px] md:text-xs uppercase tracking-wider text-[#9c711c] mt-1">Fragrances</div>
+              <div className="text-2xl md:text-3xl font-bold text-white">12</div>
+              <div className="text-[10px] md:text-xs uppercase tracking-wider text-neutral-400 mt-1">Fragrances</div>
             </div>
             <div>
-              <div className="text-2xl md:text-3xl font-bold text-[#4a3610]">100%</div>
-              <div className="text-[10px] md:text-xs uppercase tracking-wider text-[#9c711c] mt-1">Natural</div>
+              <div className="text-2xl md:text-3xl font-bold text-white">100%</div>
+              <div className="text-[10px] md:text-xs uppercase tracking-wider text-neutral-400 mt-1">Natural</div>
             </div>
             <div>
-              <div className="text-2xl md:text-3xl font-bold text-[#4a3610]">24/7</div>
-              <div className="text-[10px] md:text-xs uppercase tracking-wider text-[#9c711c] mt-1">Support</div>
+              <div className="text-2xl md:text-3xl font-bold text-white">24/7</div>
+              <div className="text-[10px] md:text-xs uppercase tracking-wider text-neutral-400 mt-1">Support</div>
             </div>
           </div>
         </div>

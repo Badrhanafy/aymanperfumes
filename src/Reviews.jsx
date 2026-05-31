@@ -31,7 +31,7 @@ const StarIcon = () => (
 );
 
 const QuoteIcon = () => (
-  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#eed516ca] backdrop-blur-md border border-black/5 shadow-sm flex items-center justify-center mb-4 md:mb-6">
+  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-neutral-100 border border-neutral-200/60 shadow-sm flex items-center justify-center mb-4 md:mb-6">
     <svg className="w-4 h-4 md:w-5 md:h-5 text-black/60" fill="currentColor" viewBox="0 0 24 24">
       <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
     </svg>
@@ -40,22 +40,22 @@ const QuoteIcon = () => (
 
 export default function Reviews() {
   return (
-    <section className="py-20 md:py-32 bg-[#fefce8] relative overflow-hidden">
+    <section className="py-20 md:py-32 bg-neutral-50 relative overflow-hidden">
       
       {/* Subtle Background Glow Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-[#c09f29]/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#eebf16]/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4 pointer-events-none" />
-
+      <div className="absolute top-0 right-0 w-96 h-96 bg-neutral-200/30 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-neutral-300/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+ 
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-16 md:mb-24">
           <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-8 h-[1px] bg-[#4a3610]"></div>
-            <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-[#9c711c] font-medium">Testimonials</span>
-            <div className="w-8 h-[1px] bg-[#4a3610]"></div>
+            <div className="w-8 h-[1px] bg-black"></div>
+            <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] text-neutral-500 font-medium">Testimonials</span>
+            <div className="w-8 h-[1px] bg-black"></div>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#4a3610] tracking-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-black tracking-tight">
             Voices of Elegance
           </h2>
         </div>
@@ -65,13 +65,13 @@ export default function Reviews() {
           {REVIEWS.map((review) => (
             <div 
               key={review.id} 
-              className="group p-8 md:p-10 rounded-2xl bg-white/50 backdrop-blur-2xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:bg-white/70 transition-all duration-500 flex flex-col"
+              className="group p-8 md:p-10 rounded-2xl bg-white border border-neutral-200/50 shadow-[0_8px_30px_rgb(0,0,0,0.02)] hover:shadow-[0_15px_40px_rgb(0,0,0,0.04)] transition-all duration-500 flex flex-col"
             >
               
               {/* Glassmorphism Quote Icon */}
               <QuoteIcon />
 
-              <p className="text-[#4a3610]/80 font-light text-sm md:text-base leading-relaxed mb-8 flex-grow">
+              <p className="text-neutral-700 font-light text-sm md:text-base leading-relaxed mb-8 flex-grow">
                 "{review.text}"
               </p>
 
@@ -79,25 +79,25 @@ export default function Reviews() {
                 <div>
                 <div className="relative">
                   <div className="relative z-10">
-                    <h4 className="font-serif text-[#4a3610] text-lg px-2">{review.name}</h4>
+                    <h4 className="font-serif text-white text-lg px-2">{review.name}</h4>
                   </div>
                   {/* Scratched Artboard SVG */}
-                  <svg className="absolute inset-0 w-full h-full -rotate-1 opacity-90 scale-x-110 scale-y-110" viewBox="0 0 100 30" preserveAspectRatio="none">
+                  <svg className="absolute inset-0 w-full h-full -rotate-1 opacity-95 scale-x-110 scale-y-110" viewBox="0 0 100 30" preserveAspectRatio="none">
                     {/* The Artboard Surface */}
                     <path 
                       d="M2,3 L98,2 L97,27 L3,28 Z" 
-                      fill="#f4bc05" 
+                      fill="#111111" 
                     />
                     {/* Horizontal Scratches */}
-                    <path d="M10,8 L30,8 M45,12 L65,12 M75,6 L92,6" stroke="#4a3610" strokeWidth="0.5" opacity="0.2" />
-                    <path d="M15,22 L40,22 M55,20 L85,20" stroke="#4a3610" strokeWidth="0.5" opacity="0.2" />
+                    <path d="M10,8 L30,8 M45,12 L65,12 M75,6 L92,6" stroke="#FFFFFF" strokeWidth="0.5" opacity="0.15" />
+                    <path d="M15,22 L40,22 M55,20 L85,20" stroke="#FFFFFF" strokeWidth="0.5" opacity="0.15" />
                     {/* Vertical Distress Marks */}
-                    <path d="M8,5 L6,15 M92,10 L94,22" stroke="#4a3610" strokeWidth="0.3" opacity="0.15" />
+                    <path d="M8,5 L6,15 M92,10 L94,22" stroke="#FFFFFF" strokeWidth="0.3" opacity="0.1" />
                     {/* Rough Edge Detail */}
-                    <path d="M2,15 L0,17 M98,12 L100,10" stroke="#4a3610" strokeWidth="0.8" opacity="0.3" />
+                    <path d="M2,15 L0,17 M98,12 L100,10" stroke="#FFFFFF" strokeWidth="0.8" opacity="0.25" />
                   </svg>
                 </div>
-                  <p className="text-[10px] uppercase tracking-wider text-[#9c711c] mt-1">{review.role}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-neutral-400 mt-1">{review.role}</p>
                 </div>
                 
                 <div className="flex gap-1 bg-white/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/80">
