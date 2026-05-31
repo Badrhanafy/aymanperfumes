@@ -36,8 +36,8 @@ export default function ProductGrid() {
           <div className="absolute top-[120vh] right-0 w-[60%] h-1/2 bg-gradient-to-l from-[#eebf16]/20 via-[#c09f29]/10 to-transparent" />
           <div className="absolute top-[140vh] left-1/4 w-[600px] h-[600px] rounded-full bg-white blur-[150px] opacity-80" />
         </div>
-
-        <Hero/>
+        <img src="./banner.png" />
+         
         
         <div className="container mx-auto px-4 md:px-6 mt-16 md:mt-24 relative z-10">
           

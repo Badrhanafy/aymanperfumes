@@ -24,7 +24,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className={`fixed w-full z-50 top-0 transition-all duration-500 ${(scrolled || isSearchOpen) ? 'bg-white/40 backdrop-blur-2xl border-b border-white/60 shadow-sm' : 'bg-gray-500/20'}`}>
+    <nav className={`fixed w-full z-50 top-0 transition-all duration-500 ${(scrolled || isSearchOpen) ? 'bg-black/40 backdrop-blur-2xl border-b border-black/60 shadow-sm' : 'bg-black-500/20'}`}>
       <div className="w-full relative px-6 md:px-12 py-4 md:py-6 h-[72px] md:h-[88px] flex items-center justify-center">
         
         <div className="w-full grid grid-cols-3 items-center relative">
@@ -98,7 +98,7 @@ export default function Navbar() {
           </div>
 
           {/* Search Results Dropdown (Scoped to the whole row) */}
-          <div className={`absolute top-full left-0 mt-2 w-full bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden transition-all duration-500 z-50 ${searchQuery.trim() !== '' ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 invisible'}`}>
+          <div className={`absolute top-full left-0 mt-2 w-full bg-black rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden transition-all duration-500 z-50 ${searchQuery.trim() !== '' ? 'opacity-100 translate-y-0 visible' : 'opacity-0 -translate-y-4 invisible'}`}>
              <div className="max-h-[50vh] overflow-y-auto p-6 md:p-8">
                 {filteredProducts.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -110,7 +110,7 @@ export default function Navbar() {
                           setIsSearchOpen(false);
                           setSearchQuery('');
                         }}
-                        className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#fefce8] transition-all group border border-transparent hover:border-[#4a3610]/10"
+                        className="flex items-center gap-4 p-3 rounded-xl hover:bg-[#ffff] transition-all group border border-transparent hover:border-[#4a3610]/10"
                       >
                         <div className="w-12 h-16 rounded-lg overflow-hidden flex-shrink-0 shadow-sm">
                           <img src={product.img} alt={product.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
