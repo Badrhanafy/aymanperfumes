@@ -82,9 +82,9 @@ const handleOrder = (e) => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative">
         
         {/* Product Image Section - Sticky */}
-        <div className="lg:col-span-5 h-[60vh] lg:h-[85vh] lg:sticky lg:top-28 rounded-2xl overflow-hidden shadow-2xl group">
+        <div className="lg:col-span-5 h-[60vh] lg:h-[85vh] lg:sticky lg:top-28 rounded-2xl overflow-hidden shadow-none group">
           <img 
-            src={product.img} 
+            src='../lemale.jpg'
             alt={product.name} 
             className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.03]"
           />

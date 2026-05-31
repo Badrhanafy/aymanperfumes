@@ -9,7 +9,7 @@ export const PRODUCTS = [
     name: "Velvet Oud", 
     price: "$120", 
     note: "Woody", 
-    img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1200&auto=format&fit=crop"
+    img: "./lemale.jpg"
   },
   { 
     id: 2, 
@@ -85,8 +85,8 @@ export default function ProductGrid() {
 
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition duration-500" />
 
-                  <div className="absolute bottom-0 left-0 w-full p-4 sm:p-5 md:p-8 bg-gradient-to-t from-black/90 via-black/35 to-transparent">
-                    <p className="text-white/90 text-[8px] md:text-[10px] uppercase tracking-[0.25em] mb-1 md:mb-2">
+                  <div className="absolute bottom-0 left-0 w-full p-4 sm:p-5 md:p-2 bg-gradient-to-t from-black via-black/80 to-transparent">
+                    <p className="text-white/90 text-[8px] md:text-[10px] uppercase tracking-[0.25em]">
                       {product.note}
                     </p>
 
