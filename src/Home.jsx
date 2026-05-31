@@ -30,13 +30,13 @@ export const PRODUCTS = [
 export default function ProductGrid() {
   return (
     <>
-      <div className="relative w-full mt-22 bg-white pb-16 md:pb-24 overflow-hidden">
+      <div className="relative w-full pt-[72px] md:pt-[88px] bg-white pb-16 md:pb-24 overflow-hidden">
         {/* Global Background Elements for the Product Grid Area */}
         <div className="absolute inset-0 pointer-events-none z-0">
           <div className="absolute top-[120vh] right-0 w-[60%] h-1/2 bg-gradient-to-l from-neutral-200/20 via-neutral-100/10 to-transparent" />
           <div className="absolute top-[140vh] left-1/4 w-[600px] h-[600px] rounded-full bg-white blur-[150px] opacity-80" />
         </div>
-        <img src="./banner.png" />
+        <img src="./banner.png" className="w-full h-auto block m-0 p-0 border-none" alt="L'Essence Banner" />
          
         
         <div className="container mx-auto px-4 md:px-6 mt-16 md:mt-24 relative z-10">
