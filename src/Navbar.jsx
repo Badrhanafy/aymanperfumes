@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import logoSvg from '../public/logos/png/logo2.png';
+import logoSvg from '../public/logos/png/logobrandblack.png';
 import { PRODUCTS } from './Home';
+import { useCart } from './CartContext';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const { totalItems, toggleSidebar } = useCart();
 
   const filteredProducts = searchQuery.trim() === '' 
     ? [] 
@@ -64,10 +66,16 @@ export default function Navbar() {
                   Search
                 </button>
 
-                <div className="relative cursor-pointer group">
+                <button
+                  onClick={toggleSidebar}
+                  className="relative cursor-pointer group flex items-center"
+                  aria-label="Open cart"
+                >
                   <span className="text-[10px] md:text-xs uppercase tracking-widest hover:opacity-70 transition-opacity">Cart</span>
-                  <span className="absolute -top-2 -right-3 bg-black text-white text-[9px] md:text-[10px] w-3.5 h-3.5 md:w-4 md:h-4 rounded-full flex items-center justify-center transition-transform group-hover:scale-110">0</span>
-                </div>
+                  <span className={`absolute -top-2 -right-3 bg-black text-white text-[9px] md:text-[10px] w-3.5 h-3.5 md:w-4 md:h-4 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${totalItems > 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}>
+                    {totalItems}
+                  </span>
+                </button>
               </div>
 
               {/* Active Search State: Input Field */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { PRODUCTS } from './Home';
+import { useCart } from './CartContext';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -14,6 +15,8 @@ export default function ProductDetails() {
   });
   
   const [isClicked, setIsClicked] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const { addItem } = useCart();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -107,6 +110,35 @@ const handleOrder = (e) => {
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-black mb-4 tracking-tight leading-none">{product.name}</h1>
             <p className="text-2xl md:text-3xl text-neutral-800 font-light italic">{product.price}</p>
           </div>
+
+          {/* Add to Cart button */}
+          <button
+            onClick={() => {
+              addItem(product, 1);
+              setAddedToCart(true);
+              setTimeout(() => setAddedToCart(false), 2000);
+            }}
+            className={`mb-10 flex items-center justify-center gap-3 w-full sm:w-auto px-10 py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300
+              ${addedToCart
+                ? 'bg-neutral-900 text-white'
+                : 'bg-black text-white hover:bg-neutral-800'}`}
+          >
+            {addedToCart ? (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Added to Cart
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                Add to Cart
+              </>
+            )}
+          </button>
           
           <div className="mb-16 relative">
             <div className="absolute -left-6 top-0 w-1 h-full bg-black opacity-20 hidden md:block"></div>
