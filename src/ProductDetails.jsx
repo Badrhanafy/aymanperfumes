@@ -158,7 +158,7 @@ export default function ProductDetails() {
           </Link>
           
           <div className="mb-10">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-black mb-4 tracking-tight leading-none">{product.name}</h1>
+            <h1 className=" test md:text-6xl lg:text-5xl font-serif text-black mb-4 tracking-tight leading-none">{product.name}</h1>
             <p className="text-2xl md:text-3xl text-neutral-800 font-light italic">{pPrice}</p>
           </div>
 
