@@ -86,7 +86,7 @@ export default function Cart() {
                   <div key={item.id} className="flex flex-col sm:flex-row gap-5 py-8 group">
 
                     {/* Image */}
-                    <Link to={`/product/${item.id}`}
+                    <Link to={`/product/${item.slug}`}
                       className="flex-shrink-0 w-full sm:w-28 h-40 sm:h-36 rounded-2xl overflow-hidden bg-neutral-100">
                       <img src={item.img} alt={item.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -96,7 +96,7 @@ export default function Cart() {
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
                         <p className="text-[9px] uppercase tracking-[0.25em] text-neutral-400 mb-1">{item.note}</p>
-                        <Link to={`/product/${item.id}`}
+                        <Link to={`/product/${item.slug}`}
                           className="text-lg md:text-xl font-serif text-black hover:text-neutral-600 transition-colors">
                           {item.name}
                         </Link>

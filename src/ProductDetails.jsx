@@ -4,8 +4,10 @@ import { PRODUCTS } from './Home';
 import { useCart } from './CartContext';
 
 export default function ProductDetails() {
-  const { id } = useParams();
-  const product = PRODUCTS.find(p => p.id === parseInt(id));
+  const { slug } = useParams();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -20,9 +22,49 @@ export default function ProductDetails() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [id]);
+    setLoading(true);
+    setError(null);
 
-  if (!product) {
+    fetch(`http://localhost:8000/api/perfumes/${slug}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Product not found');
+        return res.json();
+      })
+      .then(data => {
+        setProduct(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('API single product fetch failed:', err);
+        const slugify = (text) => text.toString().toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^\w\-]+/g, '')
+          .replace(/\-\-+/g, '-')
+          .replace(/^-+/, '')
+          .replace(/-+$/, '');
+
+        const fallback = PRODUCTS.find(p => p.slug === slug || slugify(p.name) === slug);
+        if (fallback) {
+          setProduct(fallback);
+        } else {
+          setError('Product not found');
+        }
+        setLoading(false);
+      });
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-24 bg-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-2 border-neutral-200 border-t-black rounded-full animate-spin"></div>
+          <p className="text-xs uppercase tracking-widest text-neutral-400 font-light">Loading Fragrance...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-24 bg-white">
         <div className="text-center">
@@ -33,30 +75,38 @@ export default function ProductDetails() {
     );
   }
 
+  // Normalize properties
+  const pImg = `http://localhost:8000/storage/${product.image}` ;
+  const pNote = product.brand?.name || product.note || 'Fragrance';
+  
+  let pPrice = product.price;
+  if (typeof pPrice === 'number') {
+    pPrice = `$${pPrice}`;
+  } else if (typeof pPrice === 'string' && !pPrice.startsWith('$')) {
+    pPrice = `$${pPrice}`;
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-const handleOrder = (e) => {
+  const handleOrder = (e) => {
     e.preventDefault();
     
     // 1. Format the phone number (Ensure no +, spaces, or leading zeros if required by your region)
-    // For International: "1234567890" | For local usually just the number string
     const phoneNumber = "+212640952206"; 
 
     // 2. Clean the price string to ensure the math works
-    // This removes everything except numbers and decimals
-    const numericPrice = parseFloat(product.price.replace(/[^0-9.]/g, ''));
+    const numericPrice = typeof pPrice === 'number' ? pPrice : parseFloat(pPrice.replace(/[^0-9.]/g, ''));
     const total = (numericPrice * formData.quantity).toFixed(2);
     
     // 3. Construct a clean, URL-friendly message
-    // We use a simple array and join to avoid weird indentation issues in WhatsApp
     const messageLines = [
       "*New Order Request* 🌟",
       "----------------------",
       `*Product:* ${product.name}`,
-      `*Price:* ${product.price}`,
+      `*Price:* ${pPrice}`,
       `*Quantity:* ${formData.quantity}`,
       `*Total:* $${total}`,
       "",
@@ -87,13 +137,14 @@ const handleOrder = (e) => {
         {/* Product Image Section - Sticky */}
         <div className="lg:col-span-5 h-[60vh] lg:h-[85vh] lg:sticky lg:top-28 rounded-2xl overflow-hidden shadow-none group">
           <img 
-            src='../lemale.jpg'
+            src={pImg}
             alt={product.name} 
             className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.03]"
+           
           />
           <div className="absolute top-6 left-6 lg:top-8 lg:left-8">
             <span className="bg-black/90 backdrop-blur-md px-5 py-2.5 rounded-full text-[10px] lg:text-xs uppercase tracking-[0.2em] text-white font-medium shadow-sm">
-              {product.note}
+              {pNote}
             </span>
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
@@ -108,7 +159,7 @@ const handleOrder = (e) => {
           
           <div className="mb-10">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif text-black mb-4 tracking-tight leading-none">{product.name}</h1>
-            <p className="text-2xl md:text-3xl text-neutral-800 font-light italic">{product.price}</p>
+            <p className="text-2xl md:text-3xl text-neutral-800 font-light italic">{pPrice}</p>
           </div>
 
           {/* Add to Cart button */}
@@ -143,7 +194,7 @@ const handleOrder = (e) => {
           <div className="mb-16 relative">
             <div className="absolute -left-6 top-0 w-1 h-full bg-black opacity-20 hidden md:block"></div>
             <p className="leading-relaxed text-base md:text-lg font-light text-black">
-              Experience the exquisite blend of our finest ingredients. This signature fragrance offers a timeless aroma that perfectly balances elegance and sophistication. Let <span className="font-serif italic text-black">{product.name}</span> be your ultimate scent statement, crafted for those who appreciate the true art of perfumery.
+              {product.description || `Experience the exquisite blend of our finest ingredients. This signature fragrance offers a timeless aroma that perfectly balances elegance and sophistication. Let ${product.name} be your ultimate scent statement, crafted for those who appreciate the true art of perfumery.`}
             </p>
           </div>
 

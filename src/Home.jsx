@@ -9,21 +9,24 @@ export const PRODUCTS = [
     name: "Le male Essence", 
     price: "$120", 
     note: "Woody", 
-    img: "./lemale.jpg"
+    img: "./lemale.jpg",
+    slug: "le-male-essence"
   },
   { 
     id: 2, 
     name: "Sauvage Essence", 
     price: "$95", 
     note: "Fresh", 
-    img: "./sauvage.avif"
+    img: "./sauvage.avif",
+    slug: "sauvage-essence"
   },
   { 
     id: 3, 
     name: "Silk Jasmine", 
     price: "$110", 
     note: "Floral", 
-    img: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=1200&auto=format&fit=crop"
+    img: "https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=1200&auto=format&fit=crop",
+    slug: "silk-jasmine"
   },
 ];
 

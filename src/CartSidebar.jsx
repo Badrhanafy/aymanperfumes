@@ -99,7 +99,7 @@ export default function CartSidebar() {
               return (
                 <div key={item.id} className="flex gap-4 group">
                   {/* Thumbnail */}
-                  <Link to={`/product/${item.id}`} onClick={closeSidebar}
+                  <Link to={`/product/${item.slug}`} onClick={closeSidebar}
                     className="flex-shrink-0 w-20 h-24 rounded-xl overflow-hidden bg-neutral-100">
                     <img src={item.img} alt={item.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -109,7 +109,7 @@ export default function CartSidebar() {
                   <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
                     <div>
                       <p className="text-[9px] uppercase tracking-[0.2em] text-neutral-400 mb-0.5">{item.note}</p>
-                      <Link to={`/product/${item.id}`} onClick={closeSidebar}
+                      <Link to={`/product/${item.slug}`} onClick={closeSidebar}
                         className="text-sm font-serif text-black hover:text-neutral-600 transition-colors truncate block">
                         {item.name}
                       </Link>

@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Ascender custom font ── */
+@font-face {
+  font-family: 'Ascender';
+  src: url('/fonts/Ascender.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* show fallback text instantly, swap when loaded */
+}
+@font-face {
+  font-family: 'fontmedium';
+  src: url('/fonts/fontmedium.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* show fallback text instantly, swap when loaded */
+}
+@font-face {
+  font-family: 'fontlight';
+  src: url('/fonts/fontlight.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* show fallback text instantly, swap when loaded */
+}
+.testlight{
+  font-family: "fontlight";
+  font-weight: lighter;
+}
+.test{
+  font-family: "fontmedium";
+  font-weight: lighter;
+}
+
+/* Apply Ascender to every element that uses font-serif (h1–h6, blockquote, etc.) */
+@layer base {
+  h1, h2, h3, h4, h5, h6, blockquote, cite {
+    font-family: 'fontmedium', 'Playfair Display', Georgia, serif;
+  }
+}
+

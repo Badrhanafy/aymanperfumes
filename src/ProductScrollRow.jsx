@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { PRODUCTS } from './Home';
 
 export default function ProductScrollRow() {
@@ -9,6 +9,26 @@ export default function ProductScrollRow() {
   const [scrollLeft, setScrollLeft] = useState(0);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/perfumes')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      })
+      .then(data => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('API fetch failed, falling back to static products:', err);
+        setProducts(PRODUCTS);
+        setLoading(false);
+      });
+  }, []);
 
   /* ── drag-to-scroll ── */
   const onMouseDown = (e) => {
@@ -110,54 +130,91 @@ export default function ProductScrollRow() {
         {/* Hide native scrollbar in WebKit */}
         <style>{`.product-scroll-row::-webkit-scrollbar { display: none; }`}</style>
 
-        {PRODUCTS.map((product) => (
-          <Link
-            key={product.id}
-            to={`/product/${product.id}`}
-            draggable={false}
-            className="group flex-shrink-0 w-[240px] sm:w-[280px] md:w-[320px] select-none"
-          >
-            {/* Card */}
-            <div className="relative rounded-2xl overflow-hidden bg-neutral-100 shadow-[0_4px_20px_rgb(0,0,0,0.05)] border border-neutral-200/50 h-[360px] sm:h-[400px] md:h-[440px]
-                            transition-all duration-500 group-hover:shadow-[0_16px_48px_rgb(0,0,0,0.1)] group-hover:-translate-y-1">
-
-              {/* Image */}
-              <img
-                src={product.img}
-                alt={product.name}
-                loading="lazy"
-                draggable={false}
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-[1.04]"
-                onError={(e) => {
-                  const fallbacks = [
-                    'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1588405748880-12d1d2a59b75?q=80&w=800&auto=format&fit=crop',
-                    'https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?q=80&w=800&auto=format&fit=crop',
-                  ];
-                  e.currentTarget.src = fallbacks[product.id - 1] ?? fallbacks[0];
-                }}
-              />
-
-              {/* Note badge */}
-              <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-[10px] uppercase tracking-[0.2em] text-black font-medium px-3 py-1.5 rounded-full shadow-sm">
-                {product.note}
-              </span>
-
-              {/* Bottom info overlay */}
-              <div className="absolute bottom-0 left-0 w-full px-5 py-5 bg-gradient-to-t from-black/90 via-black/50 to-transparent
-                              translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                <p className="text-[9px] uppercase tracking-[0.25em] text-white/70 mb-1">{product.note}</p>
-                <h4 className="text-lg md:text-xl font-serif text-white leading-tight">{product.name}</h4>
-                <div className="flex items-center justify-between mt-2">
-                  <p className="text-sm text-neutral-300 font-light">{product.price}</p>
-                  <span className="text-[10px] uppercase tracking-widest text-white/60 border-b border-white/30 pb-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    View →
-                  </span>
-                </div>
+        {loading ? (
+          // Luxury Shimmer Skeleton loader
+          Array.from({ length: 3 }).map((_, idx) => (
+            <div
+              key={idx}
+              className="flex-shrink-0 w-[240px] sm:w-[280px] md:w-[320px] rounded-2xl bg-neutral-100 border border-neutral-200/50 h-[360px] sm:h-[400px] md:h-[440px] animate-pulse relative"
+            >
+              <div className="absolute inset-0 bg-neutral-200" />
+              <div className="absolute bottom-5 left-5 right-5 space-y-2">
+                <div className="h-3 w-1/3 bg-neutral-300 rounded" />
+                <div className="h-5 w-2/3 bg-neutral-300 rounded" />
+                <div className="h-4 w-1/4 bg-neutral-300 rounded" />
               </div>
             </div>
-          </Link>
-        ))}
+          ))
+        ) : (
+          products.map((product) => {
+            const slugify = (text) => text.toString().toLowerCase()
+              .replace(/\s+/g, '-')
+              .replace(/[^\w\-]+/g, '')
+              .replace(/\-\-+/g, '-')
+              .replace(/^-+/, '')
+              .replace(/-+$/, '');
+
+            const pSlug = product.slug || (product.name ? slugify(product.name) : '');
+            const pImg = product.img || (product.image ? (product.image.startsWith('http') ? product.image : `http://localhost:8000/storage/${product.image}`) : './lemale.jpg');
+            const pNote = product.brand?.name || product.note || 'Fragrance';
+            
+            let pPrice = product.price;
+            if (typeof pPrice === 'number') {
+              pPrice = `$${pPrice}`;
+            } else if (typeof pPrice === 'string' && !pPrice.startsWith('$')) {
+              pPrice = `$${pPrice}`;
+            }
+
+            return (
+              <Link
+                key={product.id}
+                to={`/product/${pSlug}`}
+                draggable={false}
+                className="group flex-shrink-0 w-[240px] sm:w-[280px] md:w-[320px] select-none"
+              >
+                {/* Card */}
+                <div className="relative rounded-2xl overflow-hidden bg-neutral-100 shadow-[0_4px_20px_rgb(0,0,0,0.05)] border border-neutral-200/50 h-[360px] sm:h-[400px] md:h-[440px]
+                                transition-all duration-500 group-hover:shadow-[0_16px_48px_rgb(0,0,0,0.1)] group-hover:-translate-y-1">
+
+                  {/* Image */}
+                  <img
+                    src={pImg}
+                    alt={product.name}
+                    loading="lazy"
+                    draggable={false}
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-[1.04]"
+                    onError={(e) => {
+                      const fallbacks = [
+                        'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800&auto=format&fit=crop',
+                        'https://images.unsplash.com/photo-1588405748880-12d1d2a59b75?q=80&w=800&auto=format&fit=crop',
+                        'https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?q=80&w=800&auto=format&fit=crop',
+                      ];
+                      e.currentTarget.src = fallbacks[product.id % fallbacks.length] ?? fallbacks[0];
+                    }}
+                  />
+
+                  {/* Note badge */}
+                  <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-[10px] uppercase tracking-[0.2em] text-black font-medium px-3 py-1.5 rounded-full shadow-sm">
+                    {pNote}
+                  </span>
+
+                  {/* Bottom info overlay */}
+                  <div className="absolute bottom-0 left-0 w-full px-5 py-5 bg-gradient-to-t from-black/90 via-black/50 to-transparent
+                                  translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                    <p className="text-[9px] uppercase tracking-[0.25em] text-white/70 mb-1">{pNote}</p>
+                    <h4 className="text-lg md:text-xl font-serif text-white leading-tight">{product.name}</h4>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-sm text-neutral-300 font-light">{pPrice}</p>
+                      <span className="text-[10px] uppercase tracking-widest text-white/60 border-b border-white/30 pb-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        View →
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            );
+          })
+        )}
 
         {/* "View All" terminal card */}
         <Link

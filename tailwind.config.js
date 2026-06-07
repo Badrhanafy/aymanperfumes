@@ -9,8 +9,9 @@ export default {
         'perfume-dark': '#050505',
       },
       fontFamily: {
-        serif: ['"Playfair Display"', 'serif'],
+        serif: ['Ascender', '"Playfair Display"', 'Georgia', 'serif'],
         sans: ['Inter', 'sans-serif'],
+        ascender: ['Ascender', 'Georgia', 'serif'], // explicit utility: font-ascender
       },
     },
   },
