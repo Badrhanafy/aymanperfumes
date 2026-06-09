@@ -1,29 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { PRODUCTS } from './Home';
 import { useCart } from './CartContext';
+import { useAuth } from './AuthContext';
 
 export default function ProductDetails() {
   const { slug } = useParams();
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    address: '',
-    quantity: 1,
-  });
+  // Order states
+  const [quantity, setQuantity] = useState(1);
+  const [shippingAddress, setShippingAddress] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
   
-  const [isClicked, setIsClicked] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(null);
+  const [orderError, setOrderError] = useState(null);
+  const [lastOrder, setLastOrder] = useState(null); // store last order details
   const [addedToCart, setAddedToCart] = useState(false);
   const { addItem } = useCart();
 
+  // Fetch product details
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
     setError(null);
+    setOrderSuccess(null);
+    setOrderError(null);
+    setLastOrder(null);
 
     fetch(`http://localhost:8000/api/perfumes/${slug}`)
       .then(res => {
@@ -53,7 +64,109 @@ export default function ProductDetails() {
       });
   }, [slug]);
 
-  if (loading) {
+  // Pre‑fill contact fields when user data becomes available
+  useEffect(() => {
+    if (user) {
+      setCustomerName(user.name || '');
+      setCustomerEmail(user.email || '');
+      setCustomerPhone(user.phone || '');
+    }
+  }, [user]);
+
+  const handlePlaceOrder = async (e) => {
+    e.preventDefault();
+    setOrderSuccess(null);
+    setOrderError(null);
+    setLastOrder(null);
+
+    if (!product || !product.id) {
+      setOrderError('Product information is missing. Please refresh the page.');
+      return;
+    }
+
+    if (quantity < 1) {
+      setOrderError('Quantity must be at least 1');
+      return;
+    }
+
+    if (product.stock !== undefined && quantity > product.stock) {
+      setOrderError(`Only ${product.stock} items available in stock.`);
+      return;
+    }
+
+    if (!customerName.trim()) {
+      setOrderError('Please enter your full name.');
+      return;
+    }
+    if (!customerEmail.trim()) {
+      setOrderError('Please enter your email address.');
+      return;
+    }
+    if (!customerPhone.trim()) {
+      setOrderError('Please enter your phone number.');
+      return;
+    }
+    if (!shippingAddress.trim()) {
+      setOrderError('Please provide a shipping address.');
+      return;
+    }
+
+    const payload = {
+      items: [{ perfume_id: product.id, quantity }],
+      shipping_address: shippingAddress.trim(),
+      guest_name: customerName.trim(),
+      guest_email: customerEmail.trim(),
+      guest_phone: customerPhone.trim(),
+    };
+
+    setSubmitting(true);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 422 && data.message) {
+          throw new Error(data.message);
+        }
+        throw new Error(data.message || 'Failed to place order');
+      }
+
+      // Store the complete order from response
+      setLastOrder(data.order);
+      setOrderSuccess(`Order #${data.order.id} placed successfully!`);
+
+      // Reset form
+      setQuantity(1);
+      setShippingAddress('');
+      // Keep customer fields for convenience
+
+      // Refresh stock display
+      if (product && product.stock !== undefined) {
+        setProduct(prev => ({ ...prev, stock: prev.stock - quantity }));
+      }
+
+      // Optional auto-redirect after 5 seconds (user can still see summary)
+      setTimeout(() => {
+        navigate('/orders');
+      }, 5000);
+    } catch (err) {
+      setOrderError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading || authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-24 bg-white">
         <div className="flex flex-col items-center gap-4">
@@ -75,10 +188,8 @@ export default function ProductDetails() {
     );
   }
 
-  // Normalize properties
-  const pImg = `http://localhost:8000/storage/${product.image}` ;
+  const pImg = `http://localhost:8000/storage/${product.image}`;
   const pNote = product.brand?.name || product.note || 'Fragrance';
-  
   let pPrice = product.price;
   if (typeof pPrice === 'number') {
     pPrice = `$${pPrice}`;
@@ -86,80 +197,45 @@ export default function ProductDetails() {
     pPrice = `$${pPrice}`;
   }
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleOrder = (e) => {
-    e.preventDefault();
-    
-    // 1. Format the phone number (Ensure no +, spaces, or leading zeros if required by your region)
-    const phoneNumber = "+212640952206"; 
-
-    // 2. Clean the price string to ensure the math works
-    const numericPrice = typeof pPrice === 'number' ? pPrice : parseFloat(pPrice.replace(/[^0-9.]/g, ''));
-    const total = (numericPrice * formData.quantity).toFixed(2);
-    
-    // 3. Construct a clean, URL-friendly message
-    const messageLines = [
-      "*New Order Request* 🌟",
-      "----------------------",
-      `*Product:* ${product.name}`,
-      `*Price:* ${pPrice}`,
-      `*Quantity:* ${formData.quantity}`,
-      `*Total:* $${total}`,
-      "",
-      "*Customer Details:*",
-      `*Name:* ${formData.name}`,
-      `*Phone:* ${formData.phone}`,
-      `*Address:* ${formData.address}`
-    ];
-
-    const message = messageLines.join('\n');
-    const encodedMessage = encodeURIComponent(message);
-    
-    // 4. Use the API endpoint for better cross-device compatibility
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
-    
-    setIsClicked(true);
-    window.open(whatsappUrl, '_blank');
-    
-    setTimeout(() => {
-      setIsClicked(false);
-    }, 1500);
-  };
+  const numericPrice = typeof product.price === 'number'
+    ? product.price
+    : parseFloat(String(product.price).replace(/[^0-9.]/g, '') || 0);
+  const total = (numericPrice * quantity).toFixed(2);
+  const isOutOfStock = product.stock !== undefined && product.stock <= 0;
+  const maxQuantity = product.stock !== undefined ? product.stock : 99;
 
   return (
     <div className="min-h-screen pt-28 pb-20 px-6 md:px-12 bg-white">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative">
-        
         {/* Product Image Section - Sticky */}
         <div className="lg:col-span-5 h-[60vh] lg:h-[85vh] lg:sticky lg:top-28 rounded-2xl overflow-hidden shadow-none group">
-          <img 
+          <img
             src={pImg}
-            alt={product.name} 
+            alt={product.name}
             className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.03]"
-           
           />
           <div className="absolute top-6 left-6 lg:top-8 lg:left-8">
             <span className="bg-black/90 backdrop-blur-md px-5 py-2.5 rounded-full text-[10px] lg:text-xs uppercase tracking-[0.2em] text-white font-medium shadow-sm">
               {pNote}
             </span>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
         </div>
 
-        {/* Product Details & Form Section */}
+        {/* Product Details & Order Section */}
         <div className="lg:col-span-7 flex flex-col justify-start lg:pt-8 lg:pb-32">
           <Link to="/" className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 hover:text-black mb-8 inline-flex items-center gap-3 transition-colors w-fit group">
             <span className="w-6 h-px bg-current group-hover:w-8 transition-all duration-300"></span>
             Back to Collection
           </Link>
-          
+
           <div className="mb-10">
-            <h1 className=" test md:text-6xl lg:text-5xl font-serif text-black mb-4 tracking-tight leading-none">{product.name}</h1>
+            <h1 className="text-4xl md:text-6xl lg:text-5xl font-serif text-black mb-4 tracking-tight leading-none">{product.name}</h1>
             <p className="text-2xl md:text-3xl text-neutral-800 font-light italic">{pPrice}</p>
+            {product.stock !== undefined && (
+              <p className={`text-sm mt-2 ${product.stock <= 5 ? 'text-amber-600' : 'text-neutral-500'}`}>
+                {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+              </p>
+            )}
           </div>
 
           {/* Add to Cart button */}
@@ -190,7 +266,7 @@ export default function ProductDetails() {
               </>
             )}
           </button>
-          
+
           <div className="mb-16 relative">
             <div className="absolute -left-6 top-0 w-1 h-full bg-black opacity-20 hidden md:block"></div>
             <p className="leading-relaxed text-base md:text-lg font-light text-black">
@@ -198,103 +274,186 @@ export default function ProductDetails() {
             </p>
           </div>
 
+          {/* Order Form */}
           <div className="relative bg-neutral-50 rounded-3xl p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-neutral-200/50">
             <div className="flex items-center gap-4 mb-10">
               <span className="w-8 h-px bg-black"></span>
-              <h3 className="text-xl lg:text-2xl font-serif text-black">Reserve Your Bottle</h3>
+              <h3 className="text-xl lg:text-2xl font-serif text-black">Place Your Order</h3>
             </div>
-            
-            <form onSubmit={handleOrder} className="space-y-8">
-              {/* Full Name Input */}
+
+            <form onSubmit={handlePlaceOrder} className="space-y-8">
+              {/* Name, email, phone fields */}
               <div className="relative">
-                <input 
-                  type="text" 
-                  name="name"
+                <input
+                  type="text"
                   required
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black placeholder-transparent font-light"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black placeholder-transparent"
                   placeholder="Full Name"
                 />
                 <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
-                  Full Name
+                  Full Name *
                 </label>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                {/* Phone Input */}
-                <div className="relative">
-                  <input 
-                    type="tel" 
-                    name="phone"
-                    required
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black placeholder-transparent font-light"
-                    placeholder="Phone Number"
-                  />
-                  <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
-                    Phone Number
-                  </label>
-                </div>
-                {/* Quantity Input */}
-                <div className="relative">
-                  <input 
-                    type="number" 
-                    name="quantity"
-                    min="1"
-                    required
-                    value={formData.quantity}
-                    onChange={handleInputChange}
-                    className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black placeholder-transparent font-light"
-                    placeholder="Quantity"
-                  />
-                  <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
-                    Quantity
-                  </label>
-                </div>
-              </div>
-
-              {/* Address Input */}
               <div className="relative">
-                <textarea 
-                  name="address"
+                <input
+                  type="email"
                   required
-                  rows="2"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black resize-none placeholder-transparent font-light"
-                  placeholder="Delivery Address"
-                ></textarea>
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black placeholder-transparent"
+                  placeholder="Email Address"
+                />
                 <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
-                  Delivery Address
+                  Email Address *
                 </label>
               </div>
 
-              {/* Submit Button */}
-              <button 
-                type="submit" 
-                className={`group relative w-full bg-black text-white py-5 overflow-hidden rounded-none mt-8 shadow-md transition-all duration-300 ${isClicked ? 'scale-[0.98] bg-neutral-900 shadow-sm' : 'hover:bg-neutral-900 hover:shadow-lg'}`}
+              <div className="relative">
+                <input
+                  type="tel"
+                  required
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black placeholder-transparent"
+                  placeholder="Phone Number"
+                />
+                <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
+                  Phone Number *
+                </label>
+              </div>
+
+              <div className="relative">
+                <textarea
+                  required
+                  rows={2}
+                  value={shippingAddress}
+                  onChange={(e) => setShippingAddress(e.target.value)}
+                  className="peer w-full bg-transparent border-b border-neutral-200 px-0 py-3 outline-none focus:border-black transition-colors text-black resize-none placeholder-transparent"
+                  placeholder="Shipping Address"
+                />
+                <label className="absolute left-0 -top-3.5 text-[10px] uppercase tracking-[0.15em] text-neutral-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-neutral-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[10px] peer-focus:text-black pointer-events-none">
+                  Shipping Address *
+                </label>
+              </div>
+
+              {/* Quantity selector */}
+              <div className="relative">
+                <label className="block text-[10px] uppercase tracking-[0.15em] text-neutral-500 mb-2">
+                  Quantity
+                </label>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    disabled={quantity <= 1}
+                    className="w-10 h-10 rounded-full border border-neutral-300 flex items-center justify-center hover:border-black transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 12H4" />
+                    </svg>
+                  </button>
+                  <span className="text-2xl font-light w-12 text-center">{quantity}</span>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(Math.min(maxQuantity, quantity + 1))}
+                    disabled={quantity >= maxQuantity || isOutOfStock}
+                    className="w-10 h-10 rounded-full border border-neutral-300 flex items-center justify-center hover:border-black transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+                </div>
+                {isOutOfStock && (
+                  <p className="text-red-500 text-xs mt-2">This product is currently out of stock</p>
+                )}
+              </div>
+
+              {/* Total preview */}
+              <div className="bg-white p-4 rounded-xl border border-neutral-200">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-500 text-sm">Total amount</span>
+                  <span className="text-2xl font-serif">${total}</span>
+                </div>
+              </div>
+
+              {/* Success/Error messages */}
+              {orderSuccess && (
+                <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-xl text-sm">
+                  {orderSuccess}
+                </div>
+              )}
+              {orderError && (
+                <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl text-sm">
+                  {orderError}
+                </div>
+              )}
+
+              {/* Order summary card after success (matching response structure) */}
+              {lastOrder && (
+                <div className="border border-green-200 rounded-xl bg-green-50/30 p-4 space-y-2 text-sm">
+                  <p className="font-medium text-green-800 mb-2">✅ Order Confirmation</p>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                    <span className="text-neutral-600">Order ID:</span>
+                    <span className="font-mono text-black">#{lastOrder.id}</span>
+                    
+                    <span className="text-neutral-600">Tracking Code:</span>
+                    <span className="font-mono text-black">{lastOrder.tracking_code || 'N/A'}</span>
+                    
+                    <span className="text-neutral-600">Total:</span>
+                    <span className="font-medium">${parseFloat(lastOrder.total_price).toFixed(2)}</span>
+                    
+                    <span className="text-neutral-600">Shipping to:</span>
+                    <span className="text-black break-words">{lastOrder.shipping_address}</span>
+                    
+                    <span className="text-neutral-600">Status:</span>
+                    <span className="capitalize">{lastOrder.status}</span>
+                  </div>
+                  <p className="text-xs text-neutral-500 mt-2 pt-1 border-t border-green-200">
+                    You will be redirected to your orders page in a few seconds.
+                  </p>
+                </div>
+              )}
+
+              {/* Submit button */}
+              <button
+                type="submit"
+                disabled={submitting || isOutOfStock}
+                className={`group relative w-full bg-black text-white py-5 overflow-hidden rounded-none mt-4 shadow-md transition-all duration-300
+                  ${(submitting || isOutOfStock) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-900 hover:shadow-lg'}
+                  ${submitting ? 'scale-[0.98]' : ''}`}
               >
                 <span className="relative z-10 uppercase tracking-[0.25em] text-xs font-medium flex items-center justify-center gap-3">
-                  <svg 
-                    className={`w-5 h-5 transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)] ${
-                      isClicked 
-                        ? 'opacity-0 -translate-x-12 scale-50 rotate-[-15deg]' 
-                        : 'opacity-100 translate-x-0 scale-100 rotate-0'
-                    }`}
-                    fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.489-1.761-1.663-2.06-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
-                  </svg>
-                  Confirm Order
-                  <svg className={`w-4 h-4 transform transition-all duration-700 ease-[cubic-bezier(0.87,0,0.13,1)] ${isClicked ? 'translate-x-8 opacity-0 scale-50' : 'group-hover:translate-x-1'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                  </svg>
+                  {submitting ? (
+                    <>
+                      <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing Order...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Place Order
+                      <svg className="w-4 h-4 transform transition-all duration-700 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                      </svg>
+                    </>
+                  )}
                 </span>
               </button>
+
+              <p className="text-[10px] text-neutral-400 text-center mt-4 tracking-wider">
+                By placing an order, you agree to our terms and conditions
+              </p>
             </form>
           </div>
-
         </div>
       </div>
     </div>

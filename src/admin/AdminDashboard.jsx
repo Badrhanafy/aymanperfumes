@@ -6,7 +6,7 @@ import DashboardOverview from './DashboardOverview';
 import PerfumeList from './PerfumeList';
 import PerfumeForm from './PerfumeForm';
 import BrandManager from './BrandManager';
-
+import OrdersManager from './OrdersManagaer'
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
       });
 
       if (!res.ok) throw new Error('Deletion failed');
-      
+
       fetchPerfumes();
     } catch (err) {
       alert(err.message || 'Failed to delete product');
@@ -110,20 +110,20 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-white text-neutral-900 flex flex-col md:flex-row font-sans">
-      
+
       {/* Sidebar for Desktop / Header for Mobile - Unified Dark Contrast Sidebar */}
       <aside className="w-full md:w-64 bg-black border-b md:border-b-0 md:border-r border-neutral-900 flex flex-col justify-between p-6 md:sticky md:top-0 md:h-screen z-40">
         <div className="flex flex-col gap-8">
-          
+
           {/* Brand Logo */}
           <div className="flex items-center justify-between md:block">
             <Link to="/" className="text-xl tracking-[0.2em] uppercase font-serif text-white flex items-center gap-2 group">
               <span className="text-[#C9A84C]">L'Essence</span>
               <span className="text-[10px] bg-[#C9A84C]/15 text-[#C9A84C] border border-[#C9A84C]/30 px-2 py-0.5 rounded font-sans font-medium uppercase tracking-widest scale-90">Admin</span>
             </Link>
-            
+
             {/* Mobile Hamburger menu */}
-            <button 
+            <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden p-2 text-neutral-400 hover:text-white transition"
               aria-label="Toggle Navigation"
@@ -136,13 +136,13 @@ export default function AdminDashboard() {
 
           {/* Navigation Links */}
           <nav className={`${mobileMenuOpen ? 'flex' : 'hidden'} md:flex flex-col gap-1.5 transition-all duration-300`}>
-            
+
             {/* Overview */}
             <button
               onClick={() => { setActiveTab('overview'); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-medium transition duration-300 text-left
-                ${activeTab === 'overview' 
-                  ? 'bg-neutral-900 text-[#C9A84C] border border-neutral-800 shadow-md' 
+                ${activeTab === 'overview'
+                  ? 'bg-neutral-900 text-[#C9A84C] border border-neutral-800 shadow-md'
                   : 'text-neutral-400 hover:bg-neutral-900/60 hover:text-white'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,13 +150,27 @@ export default function AdminDashboard() {
               </svg>
               Overview
             </button>
-
+            {/* Orders Management Tab */}
+            <button
+              onClick={() => { setActiveTab('orders'); setMobileMenuOpen(false); }}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-medium transition duration-300 text-left
+    ${activeTab === 'orders'
+                  ? 'bg-neutral-900 text-[#C9A84C] border border-neutral-800 shadow-md'
+                  : 'text-neutral-400 hover:bg-neutral-900/60 hover:text-white'}`}
+            >
+             
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6" />
+              </svg>
+              Orders
+            </button>
             {/* Inventory List */}
             <button
               onClick={() => { setActiveTab('list'); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-medium transition duration-300 text-left
                 ${activeTab === 'list' || activeTab === 'edit'
-                  ? 'bg-neutral-900 text-[#C9A84C] border border-neutral-800 shadow-md' 
+                  ? 'bg-neutral-900 text-[#C9A84C] border border-neutral-800 shadow-md'
                   : 'text-neutral-400 hover:bg-neutral-900/60 hover:text-white'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,8 +183,8 @@ export default function AdminDashboard() {
             <button
               onClick={() => { setActiveTab('add'); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-medium transition duration-300 text-left
-                ${activeTab === 'add' 
-                  ? 'bg-neutral-900 text-[#C9A84C] border border-neutral-800 shadow-md' 
+                ${activeTab === 'add'
+                  ? 'bg-neutral-900 text-[#C9A84C] border border-neutral-800 shadow-md'
                   : 'text-neutral-400 hover:bg-neutral-900/60 hover:text-white'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,8 +197,8 @@ export default function AdminDashboard() {
             <button
               onClick={() => { setActiveTab('brands'); setMobileMenuOpen(false); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs uppercase tracking-wider font-medium transition duration-300 text-left
-                ${activeTab === 'brands' 
-                  ? 'bg-neutral-900 text-[#C9A84C] border border-neutral-800 shadow-md' 
+                ${activeTab === 'brands'
+                  ? 'bg-neutral-900 text-[#C9A84C] border border-neutral-800 shadow-md'
                   : 'text-neutral-400 hover:bg-neutral-900/60 hover:text-white'}`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -222,8 +236,8 @@ export default function AdminDashboard() {
                 <p className="text-[10px] text-neutral-500 truncate font-light leading-none mt-1">L'Essence Admin</p>
               </div>
             </div>
-            
-            <button 
+
+            <button
               onClick={handleLogout}
               className="p-2 text-neutral-500 hover:text-white rounded-lg hover:bg-neutral-900/60 transition flex-shrink-0"
               title="Sign Out"
@@ -250,33 +264,36 @@ export default function AdminDashboard() {
             {activeTab === 'overview' && (
               <DashboardOverview perfumes={perfumes} />
             )}
-            
+
             {activeTab === 'list' && (
-              <PerfumeList 
-                perfumes={perfumes} 
-                onEdit={handleEditClick} 
-                onDelete={handleDeletePerfume} 
+              <PerfumeList
+                perfumes={perfumes}
+                onEdit={handleEditClick}
+                onDelete={handleDeletePerfume}
               />
             )}
 
             {activeTab === 'add' && (
-              <PerfumeForm 
-                onSubmit={handleCreatePerfume} 
-                onCancel={() => setActiveTab('list')} 
+              <PerfumeForm
+                onSubmit={handleCreatePerfume}
+                onCancel={() => setActiveTab('list')}
               />
             )}
 
             {activeTab === 'edit' && (
-              <PerfumeForm 
+              <PerfumeForm
                 perfume={editPerfume}
-                onSubmit={handleUpdatePerfume} 
-                onCancel={() => { setActiveTab('list'); setEditPerfume(null); }} 
+                onSubmit={handleUpdatePerfume}
+                onCancel={() => { setActiveTab('list'); setEditPerfume(null); }}
               />
             )}
 
             {activeTab === 'brands' && (
               <BrandManager />
             )}
+             {activeTab === 'orders' && (
+                <OrdersManager />
+              )}
           </>
         )}
       </main>
